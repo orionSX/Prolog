@@ -24,3 +24,31 @@ character('Luke Skywalker', no, yes, yes, yes, yes).
 character('Spider-Man', yes, yes, yes, yes, yes).
 character('Predator', no, no, yes, no, yes).
 character('Batman', yes, yes, yes, yes, yes).
+
+start :-
+    write('Answer "yes" or "no" '), nl,
+    question1(Superhero, Super),
+    question2(Good, Good),
+    question3(SciFiFantasy, Fant),
+    question4(Human, Human),
+    question5(MainCharacter, Main),
+    character(Name, Super, Good, Fant, Human, Main),
+    format('Your char: ~w~n', [Name]), !.
+
+start :-
+    write('No character found.').
+
+question1(Superhero, Ans) :-
+    write('Is your character superhero? '), read(Ans).
+
+question2(Good, Ans) :-
+    write('Is your character good? '), read(Ans).
+
+question3(SciFiFantasy, Ans) :-
+    write('Is your character from fantasy or sci-fi? '), read(Ans).
+
+question4(Human, Ans) :-
+    write('Is your character human? '), read(Ans).
+
+question5(MainCharacter, Ans) :-
+    write('Is your character main one? '), read(Ans).

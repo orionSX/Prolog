@@ -12,3 +12,9 @@ son(X,Y):-man(X),parent(Y,X).
 son(X):-parent(X,Y),man(Y),print(Y),nl,fail.
 husband(X,Y):-man(X),woman(Y),parent(X,Z),parent(Y,Z).
 husband(X):-husband(Y,X),print(Y).
+
+grand_pa(X,Y):-man(X),parent(X,Z),parent(Z,Y).
+grand_pas(X):-grand_pa(Y,X),print(Y),nl,fail.
+grand_pa_and_da(X,Y):-grand_pa(X,Y),woman(Y);grand_pa(Y,X),woman(X).
+aunt(X,Y):-woman(X),parent(Z,Y),b_s(X,Z).
+aunts(X):-aunt(Y,X),print(Y),nl,fail.

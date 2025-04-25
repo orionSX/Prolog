@@ -1,0 +1,9 @@
+men():-man(X),print(X),nl,fail.
+women():-woman(X),print(X),nl,fail.
+parent(X):-parent(X,Y),print(Y),nl,fail.
+mother(X,Y):-parent(X,Y),woman(X),nl.
+mother(X):-mother(Y,X),woman(Y),print(Y).
+brother(X,Y):-parent(Z,X),parent(Z,Y),man(X),Y\=X.
+brothers(X):-man(Z),parent(Z,X),parent(Z,Y),man(Y),Y\=X,print(Y),nl,fail.
+b_s(X,Y):-man(Z),parent(Z,X),parent(Z,Y),Y\=X.
+b_s(X):-b_s(X,Y),print(Y),nl,fail.

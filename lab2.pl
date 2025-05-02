@@ -212,3 +212,79 @@ print_people([]).
 print_people([[Name, Profession] | Rest]) :-
     format('~w is the ~w.~n', [Name, Profession]),
     print_people(Rest).
+
+
+count_divisors_not_div3(N, Count) :- count_divisors_not_div3(N, 1, 0, Count).
+count_divisors_not_div3(N, D, Acc, Count) :-
+    D =< N,
+    N mod D =:= 0,
+    D mod 3 =\= 0,
+    Acc1 is Acc + 1,
+    D1 is D + 1,
+    count_divisors_not_div3(N, D1, Acc1, Count).
+count_divisors_not_div3(N, D, Acc, Count) :-
+    D =< N,
+    (N mod D =\= 0 ; D mod 3 =:= 0),
+    D1 is D + 1,
+    count_divisors_not_div3(N, D1, Acc, Count).
+count_divisors_not_div3(N, D, Acc, Acc) :- D > N.
+
+read_number(N) :-
+    write('Enter a number: '),
+    read(N).
+
+print_divisors_count :-
+    read_number(N),
+    count_divisors_not_div3(N, Count),
+    write('Count of divisors not divisible by 3: '), write(Count), nl.
+
+
+sum_digits(0, 0).
+sum_digits(N, Sum) :-
+    D is N mod 10,
+    N1 is N // 10,
+    sum_digits(N1, Rest),
+    Sum is Rest + D.
+
+
+prod_digits(0, 1).
+prod_digits(N, Prod) :-
+    D is N mod 10,
+    N1 is N // 10,
+    prod_digits(N1, Rest),
+    Prod is Rest * D.
+
+
+gcd(X, 0, X) :- X > 0.
+gcd(X, Y, G) :-
+    Y > 0,
+    R is X mod Y,
+    gcd(Y, R, G).
+
+coprime(A, B) :- gcd(A, B, 1).
+
+sum_special_divisors(N, Sum) :-
+    sum_digits(N, SumD),
+    prod_digits(N, ProdD),
+    sum_special_divisors(N, 1, SumD, ProdD, 0, Sum).
+
+sum_special_divisors(N, D, SumD, ProdD, Acc, Sum) :-
+    D =< N,
+    N mod D =:= 0,
+    coprime(D, SumD),
+    \+ coprime(D, ProdD),
+    Acc1 is Acc + D,
+    D1 is D + 1,
+    sum_special_divisors(N, D1, SumD, ProdD, Acc1, Sum).
+sum_special_divisors(N, D, SumD, ProdD, Acc, Sum) :-
+    D =< N,
+    (N mod D =\= 0 ; \+ coprime(D, SumD) ; coprime(D, ProdD)),
+    D1 is D + 1,
+    sum_special_divisors(N, D1, SumD, ProdD, Acc, Sum).
+sum_special_divisors(N, D, SumD, ProdD, Acc, Sum) :- D > N, Sum = Acc.
+
+
+print_special_divisor_sum :-
+    read_number(N),
+    sum_special_divisors(N, Sum),
+    write('Special divisor sum: '), write(Sum), nl.

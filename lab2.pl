@@ -173,3 +173,42 @@ show_interval_result(false) :-
 run_task_29 :-
     read_list_and_interval(List, A, B),
     (max_in_interval(List, A, B) -> show_interval_result(true) ; show_interval_result(false)).
+
+
+solve_zxc :-   
+    People = [[voronov, Vor], [pavlov, Pav], [levitsky, Lev], [sakharov, Sah]],
+
+
+    
+    permutation([dancer, painter, singer, writer], [Vor, Pav, Lev, Sah]),
+
+   
+    Vor \= singer,
+   
+    Lev \= singer,
+  
+
+   
+    Pav \= painter,
+ 
+    member([WriterName, writer], People),
+    
+   
+    WriterName \= pavlov,
+  
+
+    member([PainterName, painter], People),
+  
+   
+    PainterName \= WriterName,
+       
+   
+
+   
+    print_people(People).
+
+
+print_people([]).
+print_people([[Name, Profession] | Rest]) :-
+    format('~w is the ~w.~n', [Name, Profession]),
+    print_people(Rest).

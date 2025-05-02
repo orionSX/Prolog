@@ -109,3 +109,67 @@ min_odd_digit(N, Acc, Min) :-
     min_odd_digit(N1, NewAcc, Min).
 
 
+read_input(List, Index) :-
+    write('Введите список: '), read(List),
+    write('Введите индекс: '), read(Index).
+
+
+is_global_min(List, Index) :-
+    nth0(Index, List, Elem),        
+    min_list(List, Elem).           
+
+
+show_result(true) :-
+    write('Элемент по индексу — глобальный минимум'), nl.
+show_result(false) :-
+    write('Элемент по индексу — НЕ глобальный минимум'), nl.
+
+
+run_task_15 :-
+    read_input(List, Index),
+    (is_global_min(List, Index) -> show_result(true) ; show_result(false)).
+
+read_list(List) :-
+    write('Введите список: '), read(List).
+
+
+swap_min_max(List, Result) :-
+    min_list(List, Min), max_list(List, Max),
+    maplist(swap(Min, Max), List, Result).
+
+swap(Min, Max, X, Y) :-
+    (X =:= Min -> Y = Max ;
+     X =:= Max -> Y = Min ;
+     Y = X).
+
+
+print_list(List) :-
+    write('Результат: '), write(List), nl.
+
+
+run_task_17 :-
+    read_list(List),
+    swap_min_max(List, Result),
+    print_list(Result).
+
+
+read_list_and_interval(List, A, B) :-
+    write('Введите список: '), read(List),
+    write('Введите границу A: '), read(A),
+    write('Введите границу B: '), read(B).
+
+
+max_in_interval(List, A, B) :-
+    max_list(List, Max),
+    Max >= A, Max =< B.
+
+
+show_interval_result(true) :-
+    write('Максимум входит в интервал'), nl.
+show_interval_result(false) :-
+    write('Максимум НЕ входит в интервал'), nl.
+
+
+run_task_29 :-
+    read_list_and_interval(List, A, B),
+    (max_in_interval(List, A, B) -> show_interval_result(true) ; show_interval_result(false)).

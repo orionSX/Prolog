@@ -78,3 +78,34 @@ remove_by_digit_sum([H|T], TargetSum, [H|Result]) :-
     Sum =\= TargetSum,
     remove_by_digit_sum(T, TargetSum, Result).
 
+max_digit_up(0, 0).
+max_digit_up(N, Max) :-
+    D is N mod 10,
+    N1 is N // 10,
+    max_digit_up(N1, R),
+    Max is max(D, R).
+
+max_digit_down(N, Max) :- max_digit_down(N, 0, Max).
+max_digit_down(0, Acc, Acc).
+max_digit_down(N, Acc, Max) :-
+    D is N mod 10,
+    NewAcc is max(D, Acc),
+    N1 is N // 10,
+    max_digit_down(N1, NewAcc, Max).
+
+
+min_odd_digit(N, Min) :- min_odd_digit(N, 10, Min).
+
+
+min_odd_digit(0, 10, _) :- !, fail.
+
+min_odd_digit(0, Acc, Acc).
+
+
+min_odd_digit(N, Acc, Min) :-
+    D is N mod 10,
+    N1 is N // 10,
+    (D mod 2 =:= 1, D < Acc -> NewAcc = D ; NewAcc = Acc),
+    min_odd_digit(N1, NewAcc, Min).
+
+

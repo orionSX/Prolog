@@ -42,7 +42,7 @@ check_counts(Counts, K) :-
     \+ (member(_-Count, Counts), Count > 1, Count \= 2, Count \= K).
 
 
-has_count(C, C_-).
+has_count(C, _-C).
 
 
 write_words(_, []).

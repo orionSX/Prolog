@@ -1,53 +1,70 @@
-
 generate_words(N, K, Filename) :-
-    open(Filename, write, Stream),
-    alphabet(Alphabet),
-    findall(Word, valid_word(N, K, Alphabet, Word), Words),
-    write_words(Stream, Words),
-    close(Stream).
+    setup_call_cleanup(
+        open(Filename, write, Stream),
+        (alphabet(Alphabet),
+         generate_all_words(N, K, Alphabet, Stream)),
+        close(Stream)).
+
+generate_all_words(N, K, Filename, Stream) :-
+    
+    alphabet(Alphabet),  
+    combination(2, Alphabet, [L1, L2]),
+    subtract(Alphabet, [L1, L2], RestLetters),
+    member(LK, RestLetters),
+    numlist(1, N, AllPositions),   
+    combination(2, AllPositions, Pos1),    
+    subtract(AllPositions, Pos1, RestPos1),
+    combination(2, RestPos1, Pos2),    
+    subtract(RestPos1, Pos2, RestPos2),
+    combination(K, RestPos2, PosK),    
+    create_word(N, L1, L2, LK, Pos1, Pos2, PosK, Word),
+    atomic_list_concat(Word, '', AtomWord),
+    writeln(Stream, AtomWord),
+    fail.
+
 
 
 alphabet([a,b,c,d,e,f]).
 
 
-valid_word(N, K, Alphabet, Word) :-
-    length(Word, N),
-    maplist(member_letter(Alphabet), Word),
-    msort(Word, Sorted),                % Сортируем для подсчета
-    encode_counts(Sorted, Counts),      % Получаем частоты вида [a-1, b-2, ...]
-    check_counts(Counts, K).
+combination(0, _, []) :- !.
+combination(K, [H|T], [H|Comb]) :-
+    K1 is K - 1,
+    combination(K1, T, Comb).
+combination(K, [_|T], Comb) :-
+    combination(K, T, Comb).
 
 
-member_letter(Alphabet, X) :- member(X, Alphabet).
+create_word(N, L1, L2, LK, Pos1, Pos2, PosK, Word) :-
+    length(Word, N),    
+    fill_positions(Word, Pos1, L1),    
+    fill_positions(Word, Pos2, L2),    
+    fill_positions(Word, PosK, LK),    
+    fill_rest(Word, [L1, L2, LK]).
+
+fill_positions(Word, Positions, Letter) :-
+    maplist(fill_one_position(Word, Letter), Positions).
+
+fill_one_position(Word, Letter, Pos) :-
+    nth1(Pos, Word, Letter).
 
 
-encode_counts([], []).
-encode_counts([H|T], [H-N|R]) :-
-    count_same(H, [H|T], N, Rest),
-    encode_counts(Rest, R).
+find_free_positions(Word, FreePositions) :-   
+    findall(Pos, (nth1(Pos, Word, X), var(X)), FreePositions).
 
 
-count_same(_, [], 0, []).
-count_same(X, [X|T], N, Rest) :-
-    count_same(X, T, N1, Rest),
-    N is N1 + 1.
-count_same(X, [Y|T], 0, [Y|T]) :- X \= Y.
+fill_rest(Word, UsedLetters) :-
+    alphabet(Alphabet),
+    subtract(Alphabet, UsedLetters, RestLetters),
+    find_free_positions(Word, FreePositions),
+    length(FreePositions, N),
+    length(RestLetters, M),
+    M >= N,  
+    fill_unique(FreePositions, Word, RestLetters).
 
-
-check_counts(Counts, K) :-
-    include(has_count(2), Counts, TwoTwos),
-    include(has_count(K), Counts, OneK),
-    length(TwoTwos, 2),
-    length(OneK, 1),
-    \+ (member(_-Count, Counts), Count > 1, Count \= 2, Count \= K).
-
-
-has_count(C, _-C).
-
-
-write_words(_, []).
-write_words(Stream, [W|Ws]) :-
-    print(W),
-    atomic_list_concat(W, '', Atom),
-    writeln(Stream, Atom),
-    write_words(Stream, Ws).
+fill_unique([], _, _).
+fill_unique([Pos|Rest], Word, [Letter|Letters]) :-
+    nth1(Pos, Word, Letter),
+    fill_unique(Rest, Word, Letters).
+fill_unique([Pos|Rest], Word, [_|Letters]) :-
+    fill_unique([Pos|Rest], Word, Letters).

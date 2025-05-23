@@ -55,3 +55,8 @@ combination_repeat(K, [X|T], [X|R]) :-
 combination_repeat(K, [_|T], R) :-
     K > 0,
     combination_repeat(K, T, R).
+
+
+subset([], []).  
+subset([H|T], [H|S]) :- subset(T, S).  
+subset([_|T], S) :- subset(T, S).  
